@@ -24,7 +24,7 @@ async function startApp() {
 
    await initBrowser();
 
-   for (let i = 1; i <= 4; i++) {
+   for (let i = 1; i <= 2019; i++) {
       getProductUrl.push(`https://control-products.com/shop-products/page/${i}`);
    }
 
@@ -63,11 +63,11 @@ const getProductData = tress((url, done) => {
       // product.brand = $('').text();
       product.price = $('.price').text();
       product.link = $('link').attr('href');
-      // product.image = $('').attr('href');
-      // product.short_description = $('.post-content p').text();
+      product.image = $('.avada-product-gallery a').attr('href');
+      product.short_description = $('.post-content').find('p:first').text();
       product.categories = $('.posted_in a').text();
       product.tags = $('.tagged_as a').text();
-      // product.description = $('').text();
+      product.description = $('div.post-content:last').parent().html().replace(/\s+/g, '');
       product.specifications = $('.shop_attributes a').attr('href');
 
       // products.push(product); 
@@ -75,7 +75,6 @@ const getProductData = tress((url, done) => {
       // console.log(products);
 
       const json = JSON.stringify(product);
-      // добавляем строку в конец файла, добавляя новую строку в конец
       fs.appendFile('products.jsonl', json + '\n', 'utf8', (err) => {
          if (err) {
          console.error(err);
