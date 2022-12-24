@@ -2,45 +2,91 @@ const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
 const tress = require('tress');
 const nodemon = require('nodemon');
+const fs = require('fs');
 
 
-async function parsePage(url) {
-  const browser = await puppeteer.launch({
+
+let browser = null;
+// let products = [];
+
+async function initBrowser() {
+   browser = await puppeteer.launch({
    // headless: false
-  });
-  const page = await browser.newPage();
-  await page.goto(url);
-
-  const html = await page.content();
-
-  const $ = cheerio.load(html);
-
-
-const links = [];
-
-$('h3.product-title a').toArray().forEach((el, i) => {
-  const link = $(el).attr('href');
-  links.push(link);
-});
-
-console.log(`${links}`);
-
-//   await browser.close();
+   });
 }
 
+async function startApp() {
+   fs.truncate('products.jsonl', 0, (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
 
-const queue = tress((url, callback) => {
-  parsePage(url).then(() => {
-    callback();
-  });
-}, 1); 
+   await initBrowser();
 
-for (let i = 1; i <= 2025; i++) {
-  queue.push(`https://control-products.com/shop-products/page/${i}`);
+   for (let i = 1; i <= 4; i++) {
+      getProductUrl.push(`https://control-products.com/shop-products/page/${i}`);
+   }
+
 }
 
+const getProductUrl = tress((url, done) => {
+   (async () => {
+      const page = await browser.newPage();
+      await page.goto(url);
 
-queue
+      const html = await page.content();
+
+      const $ = cheerio.load(html);
+
+      $('h3.product-title a').toArray().forEach((el, i) => {
+         const link = $(el).attr('href');
+         getProductData.push(link);
+      });
+
+      done();
+   })();
+}, 1);
+
+const getProductData = tress((url, done) => {
+   (async () => {
+      const page = await browser.newPage();
+      await page.goto(url);
+      // console.log(url)
+      const html = await page.content();
+      const $ = cheerio.load(html);
+
+      let product = {};
+
+      product.title = $('h1.product_title').text();
+      product.sku = $('.sku').text();
+      // product.brand = $('').text();
+      product.price = $('.price').text();
+      product.link = $('link').attr('href');
+      // product.image = $('').attr('href');
+      // product.short_description = $('.post-content p').text();
+      product.categories = $('.posted_in a').text();
+      product.tags = $('.tagged_as a').text();
+      // product.description = $('').text();
+      product.specifications = $('.shop_attributes a').attr('href');
+
+      // products.push(product); 
+      console.log(product);
+      // console.log(products);
+
+      const json = JSON.stringify(product);
+      // добавляем строку в конец файла, добавляя новую строку в конец
+      fs.appendFile('products.jsonl', json + '\n', 'utf8', (err) => {
+         if (err) {
+         console.error(err);
+         }
+      });
+      
+
+      done();
+   })();
+}, 1);
 
 
 
+startApp();
