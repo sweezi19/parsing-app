@@ -3,8 +3,11 @@ const cheerio = require('cheerio');
 const tress = require('tress');
 const nodemon = require('nodemon');
 const fs = require('fs');
-const MongoClient = require("mongodb").MongoClient;
+const mongoose = require('mongoose')
+// const MongoClient = require("mongodb").MongoClient;
 
+
+mongoose.connect('mongodb://localhost:27017/', {useNewUrlParser: true});
 
 
 let browser = null;
@@ -53,7 +56,6 @@ const getProductData = tress((url, done) => {
    (async () => {
       const page = await browser.newPage();
       await page.goto(url);
-      // console.log(url)
       const html = await page.content();
       const $ = cheerio.load(html);
 
@@ -76,10 +78,7 @@ const getProductData = tress((url, done) => {
       product.description = $('div.post-content:last').parent().html().replace(/\s+/g, '');
       product.specifications = $('.shop_attributes a').attr('href');
 
-      // products.push(product); 
       console.log(product);
-      // console.log(products);
-
 
       const json = JSON.stringify(product);
       fs.appendFile('products.jsonl', json + '\n', 'utf8', (err) => {
@@ -88,17 +87,43 @@ const getProductData = tress((url, done) => {
          }
       });
       
+      
+
+      // создаем модель для продукта
+      const Product = mongoose.model('Product', productSchema);
+
+      const newProduct = new Product(product);
+      newProduct.save((error) => {
+         if (error) {
+            console.log(error);
+         } else {
+            console.log("Product saved to the database");
+         }
+      });
 
       done();
    })();
 }, 1);
 
-
+// создаем схему для продукта
+const productSchema = new mongoose.Schema({
+   title: String,
+   sku: String,
+   brand: String,
+   price: String,
+   link: String,
+   image: String,
+   short_description: String,
+   categories: String,
+   tags: String,
+   description: String,
+   specifications: String
+});
 
 startApp();
 
 
 
-const url = "mongodb://localhost:27017/";
 
-const mongoClient = new MongoClient(url);
+
+
