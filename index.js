@@ -3,6 +3,7 @@ const cheerio = require('cheerio');
 const tress = require('tress');
 const nodemon = require('nodemon');
 const fs = require('fs');
+const MongoClient = require("mongodb").MongoClient;
 
 
 
@@ -60,7 +61,12 @@ const getProductData = tress((url, done) => {
 
       product.title = $('h1.product_title').text();
       product.sku = $('.sku').text();
-      // product.brand = $('').text();
+
+      const scriptTag = $('div.avada-footer-scripts script[type="application/ld+json"]').html();
+      const data = JSON.parse(scriptTag);
+      const brand = data['@graph'][1]['brand'];
+      product.brand = brand;
+
       product.price = $('.price').text();
       product.link = $('link').attr('href');
       product.image = $('.avada-product-gallery a').attr('href');
@@ -73,6 +79,7 @@ const getProductData = tress((url, done) => {
       // products.push(product); 
       console.log(product);
       // console.log(products);
+
 
       const json = JSON.stringify(product);
       fs.appendFile('products.jsonl', json + '\n', 'utf8', (err) => {
@@ -89,3 +96,9 @@ const getProductData = tress((url, done) => {
 
 
 startApp();
+
+
+
+const url = "mongodb://localhost:27017/";
+
+const mongoClient = new MongoClient(url);
