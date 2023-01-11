@@ -1,30 +1,41 @@
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
 const tress = require('tress');
-const nodemon = require('nodemon');
 const fs = require('fs');
 const mongoose = require('mongoose')
-// const MongoClient = require("mongodb").MongoClient;
 
 
 mongoose.connect('mongodb://localhost:27017/', {useNewUrlParser: true});
 
+const productSchema = new mongoose.Schema({
+   title: String,
+   sku: String,
+   brand: String,
+   price: String,
+   link: String,
+   image: String,
+   short_description: String,
+   categories: String,
+   tags: String,
+   description: String,
+   specifications: String
+});
+
+const Product = mongoose.model('Product', productSchema);
 
 let browser = null;
-// let products = [];
 
 async function initBrowser() {
    browser = await puppeteer.launch({
-   // headless: false
    });
 }
 
 async function startApp() {
-   fs.truncate('products.jsonl', 0, (err) => {
-      if (err) {
-        console.error(err);
-      }
-    });
+   // fs.truncate('products.jsonl', 0, (err) => {
+   //    if (err) {
+   //      console.error(err);
+   //    }
+   //  });
 
    await initBrowser();
 
@@ -80,17 +91,13 @@ const getProductData = tress((url, done) => {
 
       console.log(product);
 
-      const json = JSON.stringify(product);
-      fs.appendFile('products.jsonl', json + '\n', 'utf8', (err) => {
-         if (err) {
-         console.error(err);
-         }
-      });
+      // const json = JSON.stringify(product);
+      // fs.appendFile('products.jsonl', json + '\n', 'utf8', (err) => {
+      //    if (err) {
+      //    console.error(err);
+      //    }
+      // });
       
-      
-
-      // создаем модель для продукта
-      const Product = mongoose.model('Product', productSchema);
 
       const newProduct = new Product(product);
       newProduct.save((error) => {
@@ -105,25 +112,13 @@ const getProductData = tress((url, done) => {
    })();
 }, 1);
 
-// создаем схему для продукта
-const productSchema = new mongoose.Schema({
-   title: String,
-   sku: String,
-   brand: String,
-   price: String,
-   link: String,
-   image: String,
-   short_description: String,
-   categories: String,
-   tags: String,
-   description: String,
-   specifications: String
-});
-
-startApp();
 
 
+// startApp();
 
+exports.startApp = startApp;
+exports.getProductUrl = getProductUrl;
 
+exports.Product = Product;
 
 
