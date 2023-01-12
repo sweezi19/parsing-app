@@ -11,7 +11,7 @@ const productSchema = new mongoose.Schema({
    title: String,
    sku: String,
    brand: String,
-   price: String,
+   price: Number,
    link: String,
    image: String,
    short_description: String,
@@ -25,6 +25,7 @@ const Product = mongoose.model('Product', productSchema);
 
 let browser = null;
 
+// настройка puppeteer
 async function initBrowser() {
    browser = await puppeteer.launch({
    });
@@ -60,6 +61,7 @@ const getProductUrl = tress((url, done) => {
       });
 
       done();
+      await page.close();
    })();
 }, 1);
 
@@ -80,7 +82,7 @@ const getProductData = tress((url, done) => {
       const brand = data['@graph'][1]['brand'];
       product.brand = brand;
 
-      product.price = $('.price').text();
+      product.price = $('.amount').text().replace(/[^0-9.]/g, '');
       product.link = $('link').attr('href');
       product.image = $('.avada-product-gallery a').attr('href');
       product.short_description = $('.post-content').find('p:first').text();
@@ -89,8 +91,9 @@ const getProductData = tress((url, done) => {
       product.description = $('div.post-content:last').parent().html().replace(/\s+/g, '');
       product.specifications = $('.shop_attributes a').attr('href');
 
-      console.log(product);
 
+      console.log(product);
+      
       // const json = JSON.stringify(product);
       // fs.appendFile('products.jsonl', json + '\n', 'utf8', (err) => {
       //    if (err) {
@@ -109,12 +112,13 @@ const getProductData = tress((url, done) => {
       });
 
       done();
+      product = {};
    })();
 }, 1);
 
 
 
-// startApp();
+startApp();
 
 exports.startApp = startApp;
 exports.getProductUrl = getProductUrl;
