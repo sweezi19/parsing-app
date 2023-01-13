@@ -33,13 +33,11 @@ app.set('views', path.join(__dirname, 'views'))
 
 app.get("/", (req, res) => {
    res.render('home')
-   res.send('Hello wolds');
 });
 
 app.get('/parse', (req, res) => {
    res.render('parse')
    parser.startApp()
-   res.send('The startApp function is running!');
 });
 
 
