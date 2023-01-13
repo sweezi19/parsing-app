@@ -118,7 +118,7 @@ const getProductData = tress((url, done) => {
 
 
 
-startApp();
+// startApp();
 
 exports.startApp = startApp;
 exports.getProductUrl = getProductUrl;
