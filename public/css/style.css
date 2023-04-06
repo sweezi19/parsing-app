@@ -1,0 +1,20 @@
+body {
+   background: white;
+}
+
+
+.nav {
+   display: block;
+}
+
+.loading-bar {
+   height: 40px;
+   /* background: rgb(255, 0, 0); */
+   display: none;
+}
+
+.product-table {
+   height: 40px;
+   /* background: rgb(0, 72, 255); */
+   display: none;
+}

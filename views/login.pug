@@ -1,23 +1,29 @@
 doctype html
 html(lang="en")
 head
-meta(charset="UTF-8")
-meta(http-equiv="X-UA-Compatible", content="IE=edge")
-meta(name="viewport", content="width=device-width, initial-scale=1.0")
-title Login
+    meta(charset="UTF-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Login
 body
-h1 Login page
-form(action='/login', method='post')
-label(for='email') Email
-input(type='email', id='email', name='email', placeholder='Enter your email')
-br
-label(for='password') Password
-input(type='password', id='password', name='password', placeholder='Enter your password')
-br
-input(type='submit', value='Login')
-br
-a(href="/register") Register page
-br
-a(href="/") Home page
-br
-a(href="/getData") Data page
+    h1 Login
+    form(action='/user/login' method='post')
+        label(for='email') Email
+        input(type='email' id='email' name='email' placeholder='Enter your email')
+        br
+        label(for='password') Password
+        input(type='password' id='password' name='password' placeholder='Enter your password')
+        br
+        input(type='submit' value='Login')
+    br
+    a(href="/user/signup")  If you do not have an account, please signup
+    br
+    a(href="/") Home
+    br
+    a(href="/products") Products
+
+    //- if notAuthorized
+    //-     script.
+    //-         alert("You are not authorized to access this page.");
+
+    script(src='/js/save_token.js')

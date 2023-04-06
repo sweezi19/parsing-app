@@ -1,29 +1,30 @@
 {
-  "name": "parsing",
+  "name": "rest-api",
   "version": "1.0.0",
-  "description": "site parsing",
+  "description": "A Node.js RESTful API Tutorial Project (Duild a simple shop API)",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "keywords": [
-    "nodejs",
-    "js"
+    "node",
+    "restful",
+    "api"
   ],
-  "author": "Fedor Degtiarev <sweezi19@gmail.com>",
+  "author": "Teo Tar",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "bcrypt": "^5.1.0",
     "body-parser": "^1.20.1",
     "cheerio": "^1.0.0-rc.12",
-    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
-    "mongodb": "4.6",
-    "mongoose": "^6.8.1",
+    "mongoose": "^6.9.1",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
     "pug": "^3.0.2",
-    "puppeteer": "^19.4.1",
+    "puppeteer": "^19.7.2",
     "tress": "^1.1.4"
   },
   "devDependencies": {

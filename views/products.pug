@@ -1,26 +1,40 @@
-table
-   tr
-      th Title
-      th SKU
-      th Brand
-      th Price
-      th Link
-      th Image
-      th Short Description
-      th Categories
-      th Tags
-      th Description
-      th Specifications
-   each product in products
+doctype html
+html(lang="en")
+head
+   meta(charset="UTF-8")
+   meta(http-equiv="X-UA-Compatible" content="IE=edge")
+   meta(name="viewport" content="width=device-width, initial-scale=1.0")
+   title Products
+body
+   h1 Products
+   a(href="/") Home
+   table
       tr
-         td= product.title
-         td= product.sku
-         td= product.brand
-         td= product.price
-         td= product.link
-         td= product.image
-         td= product.short_description
-         td= product.categories
-         td= product.tags
-         td= product.description
-         td= product.specifications
+         th Title
+         th SKU
+         th Brand
+         th Price
+         th Link
+         th Image
+         th Short Description
+         th Categories
+         th Tags
+         th Description
+         th Specifications
+      each product in products
+         tr
+            td= product.title
+            td= product.sku
+            td= product.brand
+            td= product.price
+            td= product.link
+            td= product.image
+            td= product.short_description
+            td= product.categories
+            td= product.tags
+            td= product.description
+            td= product.specifications 
+
+include ./nav.pug
+
+script(src='/js/handler.js')
